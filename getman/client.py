@@ -6,10 +6,10 @@ import pycookiecheat
 from rich.console import Console
 from rich.theme import Theme
 
+from getman import DictManager
 from getman.constant import HttpMethod
 from getman.decorators import deprecated
 from getman.http import HTTPClient
-from getman.manager.dict import DictManager
 from getman.settings import Settings
 
 
