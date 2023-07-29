@@ -3,9 +3,9 @@ cffi==1.15.1
 charset-normalizer==3.2.0
 cryptography==3.4.6
 idna==3.4
-importlib-metadata==6.6.0
+importlib-metadata==6.8.0
 keyring==23.0.0
-markdown-it-py==2.2.0
+markdown-it-py==3.0.0
 mdurl==0.1.2
 pycookiecheat==0.5.0
 pycparser==2.21
