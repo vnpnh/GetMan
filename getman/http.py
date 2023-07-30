@@ -1,9 +1,9 @@
-from typing import Dict, Optional, Any
+from typing import Dict, Optional
 import requests
 
-from getman.decorators import retry_request
 from getman.manager.sessions import SessionManager
 from getman.settings import Settings
+from getman.utils.decorators import retry_request
 
 
 class HTTPClient(SessionManager):

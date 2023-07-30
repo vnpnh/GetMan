@@ -9,3 +9,9 @@ class HttpMethod(StrEnum):
 	PUT = auto()
 	DELETE = auto()
 	PATCH = auto()
+
+class PlatformOS(StrEnum):
+	WINDOWS = auto()
+	DARWIN = auto()
+	LINUX = auto()
+	UNKNOWN = auto()

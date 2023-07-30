@@ -14,5 +14,7 @@ __all__ = [
     "DictManager",
     "ParamManager",
     "HeaderManager",
-    "Struct"
+    "Struct",
+    "Browser",
+    "Platform",
 ]
