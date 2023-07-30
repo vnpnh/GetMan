@@ -85,9 +85,3 @@ class GetMan(HTTPClient):
 		self.console.print(report, style="info")
 
 		return report
-
-	# def get_chrome_cookies(self, set_cookies: bool = True) -> dict:
-	# 	cookies = pycookiecheat.chrome_cookies(self.baseURL)
-	# 	if set_cookies:
-	# 		self.add_cookies(cookies)
-	# 	return cookies
