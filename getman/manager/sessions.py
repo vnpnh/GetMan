@@ -3,7 +3,6 @@ from typing import Optional, Any
 import requests
 
 
-
 class SessionManager:
 	session: requests.Session = requests.Session()
 

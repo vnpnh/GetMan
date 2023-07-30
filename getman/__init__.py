@@ -1,4 +1,5 @@
 from .manager import dict, sessions
+from .manager.browser import Browser
 from .manager.dict import DictManager, HeaderManager, ParamManager
 from .models.struct import Struct
 from .http import HTTPClient
@@ -16,5 +17,4 @@ __all__ = [
     "HeaderManager",
     "Struct",
     "Browser",
-    "Platform",
 ]

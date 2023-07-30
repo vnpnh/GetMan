@@ -2,7 +2,6 @@ from dataclasses import field
 from typing import Optional
 
 import browser_cookie3
-from pycookiecheat import pycookiecheat
 
 from getman.constant import PlatformOS
 from getman.manager.browser.manager import BrowserManager
@@ -28,10 +27,7 @@ class Browser(Platform, BrowserManager):
         return cookie_dict
 
     def get_chrome_cookies(self, url: str) -> dict:
-        if self.platform in [PlatformOS.WINDOWS, PlatformOS.LINUX]:
-            return self.cookiejar_to_dict(browser_cookie3.chrome(domain_name=url))
-        elif self.platform == PlatformOS.DARWIN:
-            return pycookiecheat.chrome_cookies(url)
+        return self.cookiejar_to_dict(browser_cookie3.chrome(domain_name=url))
 
     def get_firefox_cookies(self, url: str) -> dict:
         if self.platform == PlatformOS.WINDOWS:
