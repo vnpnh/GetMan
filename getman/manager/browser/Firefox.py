@@ -6,7 +6,6 @@ from getman.manager.browser.base import BrowserBase
 class Firefox(BrowserBase):
 
     def get_cookies_by_url(self, url: str) -> dict:
-
         profile_path = os.path.join(self.app_data, "Mozilla", "Firefox", "Profiles")
 
         # List all directories (profiles) in the Firefox profiles folder
@@ -25,7 +24,7 @@ class Firefox(BrowserBase):
             print("No default-release profile found.")
 
         cookies_db = os.path.join(profile_path, 'cookies.sqlite')
-        print(cookies_db)
+
         cookies_dict = {}
         try:
             # Connect to the Firefox cookies database

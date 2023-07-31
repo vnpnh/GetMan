@@ -21,5 +21,6 @@ class BrowserBase:
     def get_cookies_by_url(self, url: str):
         pass
 
-    def connect_sql_lite3(self, cookies):
+    @classmethod
+    def connect_sql_lite3(cls, cookies):
         return sqlite3.connect(cookies)
