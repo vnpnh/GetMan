@@ -9,7 +9,7 @@ README = (HERE / "README.md").read_text()
 
 setup(
     name='getman',
-    version='0.0.3.15',
+    version='0.0.3.18',  # This is testing version
     packages=find_packages(exclude=["tests", "tests.*"]),
     url='https://github.com/vnpnh/GetMan',
     license='MIT',

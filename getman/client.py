@@ -49,7 +49,7 @@ class GetMan(HTTPClient):
 			self,
 			method: HttpMethod,
 			routes: Optional[str] = None,
-			header: dict or DictManager = None,
+			headers: dict or DictManager = None,
 			params: dict or DictManager = None,
 			data: dict or DictManager = None,
 			**kwargs,
@@ -59,15 +59,15 @@ class GetMan(HTTPClient):
 
 		match method:
 			case HttpMethod.GET:
-				return self.get(url=routes, headers=header, params=params, settings=self.settings, **kwargs)
+				return self.get(url=routes, headers=headers, params=params, settings=self.settings, **kwargs)
 			case HttpMethod.POST:
-				return self.post(url=routes, headers=header,  params=params, data=data, settings=self.settings, **kwargs)
+				return self.post(url=routes, headers=headers, params=params, data=data, settings=self.settings, **kwargs)
 			case HttpMethod.DELETE:
-				return self.delete(url=routes, headers=header,  params=params, data=data, settings=self.settings, **kwargs)
+				return self.delete(url=routes, headers=headers, params=params, data=data, settings=self.settings, **kwargs)
 			case HttpMethod.PUT:
-				return self.put(url=routes, headers=header,  params=params, data=data, settings=self.settings, **kwargs)
+				return self.put(url=routes, headers=headers, params=params, data=data, settings=self.settings, **kwargs)
 			case HttpMethod.PATCH:
-				return self.patch(url=routes, headers=header,  params=params, data=data, settings=self.settings, **kwargs)
+				return self.patch(url=routes, headers=headers, params=params, data=data, settings=self.settings, **kwargs)
 			case _:
 				raise ValueError("Method not allowed, only get, post, delete, put, patch")
 
@@ -75,14 +75,16 @@ class GetMan(HTTPClient):
 		url = data.url
 		status_code = data.status_code
 		elapsed_time = data.elapsed.total_seconds()
-		header = data.headers
+		request_header = data.request.headers
+		response_header = data.headers
 
 		report = f"URL: {url}\n"
 		if show_cookies:
 			report += f"Cookies: {self.get_cookie()}\n"
 		report += f"Status Code: {status_code} ({data.reason})\n"
 
-		report += f"Header: {header}\n"
+		report += f"Request Header: {request_header}\n"
+		report += f"Response Header: {response_header}\n"
 
 		report += f"Settings: {self.settings}\n"
 
