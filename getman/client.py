@@ -68,8 +68,10 @@ class GetMan(HTTPClient):
 				return self.put(url=routes, headers=headers, params=params, data=data, settings=self.settings, **kwargs)
 			case HttpMethod.PATCH:
 				return self.patch(url=routes, headers=headers, params=params, data=data, settings=self.settings, **kwargs)
+			case HttpMethod.OPTION:
+				return self.options(url=routes, headers=headers, params=params, data=data, settings=self.settings, **kwargs)
 			case _:
-				raise ValueError("Method not allowed, only get, post, delete, put, patch")
+				raise ValueError("Method not allowed, only get, post, delete, put, patch, and options")
 
 	def get_report(self, data, show_cookies: bool = False):
 		url = data.url

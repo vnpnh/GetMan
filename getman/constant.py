@@ -9,6 +9,7 @@ class HttpMethod(StrEnum):
     PUT = auto()
     DELETE = auto()
     PATCH = auto()
+    OPTION = auto()
 
 
 class PlatformOS(StrEnum):
