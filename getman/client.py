@@ -1,6 +1,6 @@
 import json
 from dataclasses import dataclass, field
-from typing import Optional
+from typing import Optional, Union, Dict
 
 from rich.console import Console
 from rich.theme import Theme
@@ -22,7 +22,29 @@ class GetMan(HTTPClient):
 
 	def __post_init__(self):
 		self.console = Console(theme=Theme(self.settings.style), color_system=self.settings.color_system)
-		self.url = self.baseURL + self.version
+		self.url = self.normalized_url(self.baseURL, self.version)
+
+	@classmethod
+	def normalized_url(cls, *parts: str) -> str:
+		"""
+		Combine multiple URL components ensuring no double slashes.
+
+		Args:
+			parts (str): URL components to be combined.
+
+		Returns:
+			str: The combined URL.
+		"""
+		cleaned_parts = []
+
+		for part in parts:
+			if '://' in part:
+				protocol, remaining = part.split('://', 1)
+				cleaned_parts.append(f"{protocol}://{remaining.rstrip('/')}")
+			else:
+				cleaned_parts.append(part.strip('/'))
+
+		return "/".join(cleaned_parts)
 
 	def routes(self, *args) -> str:
 		"""
@@ -41,21 +63,41 @@ class GetMan(HTTPClient):
 				route = client.routes("users", "123", "profile")
 				# Result: "https://example.com/v1/users/123/profile"
 		"""
-		url_parts = [self.baseURL, self.version] + list(args)
-		self.url = "/".join(filter(None, url_parts))
+
+		url_components = [self.baseURL]
+		if getattr(self, 'version', None):
+			url_components.append(self.version)
+		url_components.extend(args)
+		self.url = self.normalized_url(*url_components)
+
 		return self.url
 
 	def perform_request(
 			self,
-			method: HttpMethod,
+			method: Union[str, HttpMethod],
 			routes: Optional[str] = None,
-			headers: dict or DictManager = None,
-			params: dict or DictManager = None,
-			data: dict or DictManager = None,
-			**kwargs,
+			data: Optional[Union[Dict, DictManager]] = None,
+			headers: Optional[Union[Dict, DictManager]] = None,
+			params: Optional[Union[Dict, DictManager]] = None,
+			**kwargs
 	):
-		if not routes:
-			routes = self.url
+		"""
+		Perform an API request.
+
+		Args:
+		- method: The HTTP method to use.
+		- routes: The routes for the request.
+		- headers: The headers to send with the request.
+		- params: The query parameters to send with the request.
+		- data: The body data to send with the request.
+
+		Raises:
+		- ValueError: If the method is not supported.
+
+		Returns:
+		- The response of the request.
+		"""
+		routes = routes or self.url
 
 		match method:
 			case HttpMethod.GET:
@@ -73,30 +115,41 @@ class GetMan(HTTPClient):
 			case _:
 				raise ValueError("Method not allowed, only get, post, delete, put, patch, and options")
 
-	def get_report(self, data, show_cookies: bool = False):
-		url = data.url
-		status_code = data.status_code
-		elapsed_time = data.elapsed.total_seconds()
-		request_header = data.request.headers
-		response_header = data.headers
+	def get_report(
+			self,
+			data,
+			show_cookies: Optional[bool] = False,
+			show_request_header: Optional[bool] = False,
+			show_response_header: Optional[bool] = False,
+			show_settings: Optional[bool] = False,
+	) -> str:
+		"""
+		Generates a report based on provided data and optional flags.
 
-		report = f"URL: {url}\n"
-		if show_cookies:
-			report += f"Cookies: {self.get_cookie()}\n"
-		report += f"Status Code: {status_code} ({data.reason})\n"
-
-		report += f"Request Header: {request_header}\n"
-		report += f"Response Header: {response_header}\n"
-
-		report += f"Settings: {self.settings}\n"
+		:param data: Input data
+		:param show_cookies: Flag to determine if cookies should be included in the report
+		:param show_request_header: Flag to determine if request headers should be included in the report
+		:param show_response_header: Flag to determine if response headers should be included in the report
+		:param show_settings: Flag to determine if settings should be included in the report
+		:return: A formatted report string
+		"""
+		sections = [
+			f"URL: {data.url}",
+			f"Status Code: {data.status_code} ({data.reason})",
+			f"Cookies: {self.get_cookie()}" if show_cookies else "",
+			f"Request Header: {data.request.headers}" if show_request_header else "",
+			f"Response Header: {data.headers}" if show_response_header else "",
+			f"Settings: {self.settings}" if show_settings else ""
+		]
 
 		try:
 			json_response = json.dumps(data.json(), indent=2)
-			report += f"JSON Response: {json_response}\n"
+			sections.append(f"JSON Response: {json_response}")
 		except json.JSONDecodeError:
-			report += "Invalid JSON Response\n"
+			sections.append(f"Response Text: {data.text}")
 
-		report += f"Elapsed Time (seconds): {elapsed_time}\n"
+		sections.append(f"Elapsed Time (seconds): {data.elapsed.total_seconds()}")
+		report = "\n".join(filter(bool, sections))
 		self.console.print(report, style="info")
 
 		return report

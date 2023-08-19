@@ -45,8 +45,6 @@ def retry_request():
             for retry in range(max_retries):
                 try:
                     response = func(*args, **kwargs)
-                    # Process the response
-                    print(response.status_code)
                     return response
                 except (requests.Timeout, requests.ConnectionError) as e:
                     # Handle timeout or connection errors
