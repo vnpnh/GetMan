@@ -31,7 +31,7 @@ setup(
     include_package_data=True,
     install_requires=[
         "requests>=2.31.0",
-        "rich>=13.5.0",
+        "rich>=13.6.0",
         "browser-cookie3>=0.19.1",
     ],
     python_requires=">=3.9",
