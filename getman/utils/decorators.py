@@ -40,8 +40,10 @@ def retry_request():
     def decorator_request(func):
         @functools.wraps(func)
         def wrapper_request(*args, **kwargs):
-            max_retries = kwargs.get("settings").retries
-            retry_delay_seconds = kwargs.get("settings").delay
+            settings = kwargs.get("settings")
+            max_retries = settings.retries
+            retry_delay_seconds = settings.delay
+            timeout_increment = settings.timeout_increment
             for retry in range(max_retries):
                 try:
                     response = func(*args, **kwargs)
@@ -49,6 +51,8 @@ def retry_request():
                 except (requests.Timeout, requests.ConnectionError) as e:
                     # Handle timeout or connection errors
                     print(f"Retry {retry + 1}: {e}")
+                    settings.timeout += timeout_increment
+                    kwargs['settings'] = settings
                     if retry < max_retries - 1:
                         # Wait for the specified delay before the next retry
                         time.sleep(retry_delay_seconds)

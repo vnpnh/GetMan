@@ -9,7 +9,7 @@ README = (HERE / "README.md").read_text()
 
 setup(
     name='getman',
-    version='0.0.3.18',  # This is testing version
+    version='0.0.3.25',  # This is testing version
     packages=find_packages(exclude=["tests", "tests.*"]),
     url='https://github.com/vnpnh/GetMan',
     license='MIT',
@@ -26,6 +26,7 @@ setup(
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
     ],
     include_package_data=True,
     install_requires=[
@@ -33,6 +34,6 @@ setup(
         "rich>=13.5.0",
         "browser-cookie3>=0.19.1",
     ],
-    python_requires=">=3.6",
+    python_requires=">=3.9",
     setup_requires=["wheel"],
 )
