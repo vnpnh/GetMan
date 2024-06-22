@@ -2,7 +2,7 @@ import json
 import asyncio
 
 from dataclasses import dataclass, field
-from typing import Optional, Union, Dict, Any, List
+from typing import Optional, Union, Dict, List
 
 from rich.console import Console
 from rich.theme import Theme
@@ -10,12 +10,12 @@ from rich.theme import Theme
 from getman import DictManager
 from getman.constant import HttpMethod
 from getman.http import HTTPClient
-from getman.queue import Queue
+from getman.manager.queue import QueueManager
 from getman.settings import Settings
 
 
 @dataclass
-class GetMan(HTTPClient, Queue):
+class GetMan(HTTPClient, QueueManager):
 	baseURL: str
 	version: Optional[str] = ""
 	token: Optional[str] = None

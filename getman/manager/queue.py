@@ -1,4 +1,4 @@
-class Queue:
+class QueueManager:
 	items = []
 
 	def is_queue_empty(self):
