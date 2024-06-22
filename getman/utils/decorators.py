@@ -1,10 +1,11 @@
 import functools
 import time
 import warnings
-
+import asyncio
 import requests
 
 from getman.constant import PlatformOS
+from functools import wraps
 
 
 def platform_checker(cls):
@@ -62,3 +63,14 @@ def retry_request():
         return wrapper_request
 
     return decorator_request
+
+
+def run(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        async def async_func():
+            return await func(*args, **kwargs)
+
+        return asyncio.run(async_func())
+
+    return wrapper

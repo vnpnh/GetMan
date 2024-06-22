@@ -1,6 +1,8 @@
 import json
+import asyncio
+
 from dataclasses import dataclass, field
-from typing import Optional, Union, Dict
+from typing import Optional, Union, Dict, Any, List
 
 from rich.console import Console
 from rich.theme import Theme
@@ -8,11 +10,12 @@ from rich.theme import Theme
 from getman import DictManager
 from getman.constant import HttpMethod
 from getman.http import HTTPClient
+from getman.queue import Queue
 from getman.settings import Settings
 
 
 @dataclass
-class GetMan(HTTPClient):
+class GetMan(HTTPClient, Queue):
 	baseURL: str
 	version: Optional[str] = ""
 	token: Optional[str] = None
@@ -72,15 +75,16 @@ class GetMan(HTTPClient):
 
 		return self.url
 
-	def perform_request(
+	async def perform_request(
 			self,
 			method: Union[str, HttpMethod],
 			routes: Optional[str] = None,
 			data: Optional[Union[Dict, DictManager]] = None,
 			headers: Optional[Union[Dict, DictManager]] = None,
 			params: Optional[Union[Dict, DictManager]] = None,
+			queue: Optional[bool] = False,
 			**kwargs
-	):
+	) -> HTTPClient or None:
 		"""
 		Perform an API request.
 
@@ -90,30 +94,40 @@ class GetMan(HTTPClient):
 		- headers: The headers to send with the request.
 		- params: The query parameters to send with the request.
 		- data: The body data to send with the request.
+		- queue: If True, the request will be queued and executed later and if False will execute the queue and current.
 
 		Raises:
 		- ValueError: If the method is not supported.
 
 		Returns:
-		- The response of the request.
+		- The response of the request or coroutine if queue is true.
 		"""
 		routes = routes or self.url
 
-		match method:
-			case HttpMethod.GET:
-				return self.get(url=routes, headers=headers, params=params, settings=self.settings, **kwargs)
-			case HttpMethod.POST:
-				return self.post(url=routes, headers=headers, params=params, data=data, settings=self.settings, **kwargs)
-			case HttpMethod.DELETE:
-				return self.delete(url=routes, headers=headers, params=params, data=data, settings=self.settings, **kwargs)
-			case HttpMethod.PUT:
-				return self.put(url=routes, headers=headers, params=params, data=data, settings=self.settings, **kwargs)
-			case HttpMethod.PATCH:
-				return self.patch(url=routes, headers=headers, params=params, data=data, settings=self.settings, **kwargs)
-			case HttpMethod.OPTION:
-				return self.options(url=routes, headers=headers, params=params, data=data, settings=self.settings, **kwargs)
-			case _:
-				raise ValueError("Method not allowed, only get, post, delete, put, patch, and options")
+		def create_request_task():
+			return lambda: asyncio.create_task(self.request(method, routes, data, headers, params, self.settings, **kwargs))
+
+		if queue:
+			self.enqueue(create_request_task())
+			return
+		elif not queue and not self.is_queue_empty():
+			await self.execute_queue()
+			return
+
+		return await self.request(method, routes, data, headers, params, self.settings, **kwargs)
+
+	async def execute_queue(self) -> List[HTTPClient] or None:
+		"""
+		Execute the queued requests.
+
+		Returns:
+			A list of responses if the queue is not empty.
+		"""
+		if not self.is_queue_empty():
+			tasks = [task_creator() for task_creator in self.get_queues()]
+			self.clear_queue()
+			results = await asyncio.gather(*tasks)
+			return results
 
 	def get_report(
 			self,
@@ -133,8 +147,17 @@ class GetMan(HTTPClient):
 		:param show_settings: Flag to determine if settings should be included in the report
 		:return: A formatted report string
 		"""
+
+		if data is None:
+			raise ValueError("No data provided to generate a report.")
+
+		if type(data) is list:
+			for item in data:
+				return self.get_report(item, show_cookies, show_request_header, show_response_header, show_settings)
+
 		sections = [
 			f"URL: {data.url}",
+			f"Method: {data.request.method}",
 			f"Status Code: {data.status_code} ({data.reason})",
 			f"Cookies: {self.get_cookie()}" if show_cookies else "",
 			f"Request Header: {data.request.headers}" if show_request_header else "",
