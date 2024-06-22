@@ -65,7 +65,7 @@ def retry_request():
     return decorator_request
 
 
-def run(func):
+def coroutine(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
         async def async_func():
