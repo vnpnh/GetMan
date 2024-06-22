@@ -86,7 +86,7 @@ class GetMan(HTTPClient, QueueManager):
 			**kwargs
 	) -> HTTPClient or None:
 		"""
-		Perform an API request.
+		Perform an API async request.
 
 		Args:
 		- method: The HTTP method to use.
@@ -94,7 +94,7 @@ class GetMan(HTTPClient, QueueManager):
 		- headers: The headers to send with the request.
 		- params: The query parameters to send with the request.
 		- data: The body data to send with the request.
-		- queue: If True, the request will be queued and executed later and if False will execute the queue and current.
+		- queue: If True, the request will be queued and if False will execute current request
 
 		Raises:
 		- ValueError: If the method is not supported.
@@ -102,19 +102,16 @@ class GetMan(HTTPClient, QueueManager):
 		Returns:
 		- The response of the request or coroutine if queue is true.
 		"""
-		routes = routes or self.url
-
-		def create_request_task():
-			return lambda: asyncio.create_task(self.request(method, routes, data, headers, params, self.settings, **kwargs))
 
 		if queue:
-			self.enqueue(create_request_task())
-			return
-		elif not queue and not self.is_queue_empty():
-			await self.execute_queue()
+			self.enqueue(
+				lambda: asyncio.create_task(
+					self.async_request(method, routes, data, headers, params, **kwargs)
+				)
+			)
 			return
 
-		return await self.request(method, routes, data, headers, params, self.settings, **kwargs)
+		return await self.async_request(method, routes, data, headers, params, **kwargs)
 
 	async def execute_queue(self) -> List[HTTPClient] or None:
 		"""
@@ -128,6 +125,72 @@ class GetMan(HTTPClient, QueueManager):
 			self.clear_queue()
 			results = await asyncio.gather(*tasks)
 			return results
+
+	async def async_request(
+			self,
+			method: Union[str, HttpMethod],
+			routes: str = None,
+			data: Union[Dict, DictManager] = None,
+			headers: Union[Dict, DictManager] = None,
+			params: Union[Dict, DictManager] = None,
+			**kwargs
+	):
+		return self.request(method, routes, data, headers, params, **kwargs)
+
+	def request(
+			self,
+			method: Union[str, HttpMethod],
+			routes: str = None,
+			data: Union[Dict, DictManager] = None,
+			headers: Union[Dict, DictManager] = None,
+			params: Union[Dict, DictManager] = None,
+			queue: Optional[bool] = False,
+			**kwargs
+	):
+		"""
+		Perform an API request.
+
+		Args:
+			method: The HTTP method to use.
+			routes: The routes for the request.
+			headers: The headers to send with the request.
+			params: The query parameters to send with the request.
+			data: The body data to send with the request.
+			settings: The settings to use for the request.
+			queue: If True, the request will be queued and if False will execute current request
+
+		Returns:
+			requests.Response: The response object containing the result of the request.
+		"""
+
+		routes = routes or self.url
+
+		if queue:
+			self.enqueue(
+				lambda: asyncio.create_task(
+					self.async_request(method, routes, data, headers, params, **kwargs)
+				)
+			)
+			return
+
+		if isinstance(method, HttpMethod):
+			method = method.value
+
+		match method:
+			case HttpMethod.GET:
+				return self.get(url=routes, headers=headers, params=params, settings=self.settings, **kwargs)
+			case HttpMethod.POST:
+				return self.post(url=routes, headers=headers, params=params, data=data, settings=self.settings, **kwargs)
+			case HttpMethod.DELETE:
+				return self.delete(url=routes, headers=headers, params=params, data=data, settings=self.settings, **kwargs)
+			case HttpMethod.PUT:
+				return self.put(url=routes, headers=headers, params=params, data=data, settings=self.settings, **kwargs)
+			case HttpMethod.PATCH:
+				return self.patch(url=routes, headers=headers, params=params, data=data, settings=self.settings, **kwargs)
+			case HttpMethod.OPTION:
+				return self.options(url=routes, headers=headers, params=params, data=data, settings=self.settings, **kwargs)
+			case _:
+				raise ValueError("Method not allowed, only get, post, delete, put, patch, and options")
 
 	def get_report(
 			self,

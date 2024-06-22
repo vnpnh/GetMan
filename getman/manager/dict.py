@@ -41,6 +41,10 @@ class DictManager:
 	def __hash__(self):
 		return hash(tuple(sorted(self.data.items())))
 
+	def __iter__(self):
+		"""Make the DictManager instance iterable over its data."""
+		return iter(self.data.items())
+
 	def add(self, key: str, value: Any) -> None:
 		"""Add an item to the cache."""
 		self.data[key] = value
