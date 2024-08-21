@@ -1,10 +1,11 @@
 import functools
 import time
 import warnings
-
+import asyncio
 import requests
 
 from getman.constant import PlatformOS
+from functools import wraps
 
 
 def platform_checker(cls):
@@ -40,17 +41,19 @@ def retry_request():
     def decorator_request(func):
         @functools.wraps(func)
         def wrapper_request(*args, **kwargs):
-            max_retries = kwargs.get("settings").retries
-            retry_delay_seconds = kwargs.get("settings").delay
+            settings = kwargs.get("settings")
+            max_retries = settings.retries
+            retry_delay_seconds = settings.delay
+            timeout_increment = settings.timeout_increment
             for retry in range(max_retries):
                 try:
                     response = func(*args, **kwargs)
-                    # Process the response
-                    print(response.status_code)
                     return response
                 except (requests.Timeout, requests.ConnectionError) as e:
                     # Handle timeout or connection errors
                     print(f"Retry {retry + 1}: {e}")
+                    settings.timeout += timeout_increment
+                    kwargs['settings'] = settings
                     if retry < max_retries - 1:
                         # Wait for the specified delay before the next retry
                         time.sleep(retry_delay_seconds)
@@ -60,3 +63,14 @@ def retry_request():
         return wrapper_request
 
     return decorator_request
+
+
+def coroutine(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        async def async_func():
+            return await func(*args, **kwargs)
+
+        return asyncio.run(async_func())
+
+    return wrapper

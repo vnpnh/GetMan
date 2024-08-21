@@ -46,6 +46,9 @@ class Struct:
 		attributes = ', '.join(f'{key}={value}' for key, value in self.__dict__.items())
 		return f'Struct({attributes})'
 
+	def __getattr__(self, name):
+		return None
+
 	def __str__(self):
 		attributes = ', '.join(f'{key}={value}' for key, value in self.__dict__.items())
 		return f'Struct: {attributes}'

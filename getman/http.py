@@ -1,5 +1,6 @@
-from typing import Dict, Optional
 import requests
+
+from typing import Dict, Optional
 
 from getman.manager.sessions import SessionManager
 from getman.settings import Settings
