@@ -32,4 +32,4 @@ jobs:
 
     - name: Run tests and check coverage
       run: |
-        pytest --cov=getman --cov-fail-under=80
+        pytest --cov=getman --cov-fail-under=80 tests/
