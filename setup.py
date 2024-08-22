@@ -1,6 +1,8 @@
 import pathlib
 from setuptools import setup, find_packages
 
+from getman import version
+
 # The directory containing this file
 HERE = pathlib.Path(__file__).parent
 
@@ -9,7 +11,7 @@ README = (HERE / "README.md").read_text()
 
 setup(
     name='getman',
-    version='0.0.4.2',  # This is testing version
+    version=version.VERSION_TEXT,
     packages=find_packages(exclude=["tests", "tests.*"]),
     url='https://github.com/vnpnh/GetMan',
     license='MIT',
