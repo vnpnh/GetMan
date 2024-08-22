@@ -4,19 +4,20 @@ from getman.manager.browser.base import BrowserBase
 
 
 class Firefox(BrowserBase):
+    """
+    Firefox class for managing Firefox browser instances.
+    """
 
     def get_cookies_by_url(self, url: str) -> dict:
         profile_path = os.path.join(self.app_data, "Mozilla", "Firefox", "Profiles")
-
-        # List all directories (profiles) in the Firefox profiles folder
         profiles = os.listdir(profile_path)
-
-        # Find the appropriate profile based on your criteria
         desired_profile = None
+
         for profile in profiles:
             if profile.endswith(".default-release"):
                 desired_profile = profile
                 break
+
         if desired_profile is not None:
             profile_path = os.path.join(profile_path, desired_profile)
             print("Found Firefox profile path:", profile_path)
@@ -32,7 +33,8 @@ class Firefox(BrowserBase):
             cursor = conn.cursor()
 
             # Get cookies from the database for the specified host
-            cursor.execute("SELECT name, value FROM moz_cookies WHERE host LIKE ?", ('%' + url + '%',))
+            cursor.execute("SELECT name, value FROM moz_cookies"
+                           " WHERE host LIKE ?", ('%' + url + '%',))
             cookies = cursor.fetchall()
             for cookie in cookies:
                 cookie_name = cookie[0]
@@ -43,8 +45,11 @@ class Firefox(BrowserBase):
 
             # Close the database connection
             conn.close()
+        except FileNotFoundError as e:
+            print(f"File not found: {e}")
+            return {}
         except Exception as e:
-            print(f"Error accessing Firefox cookies: {e}")
+            print(f"Unexpected error: {e}")
             return {}
 
         return cookies_dict

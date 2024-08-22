@@ -1,7 +1,7 @@
 from . import version
 from .client import GetMan
 from .http import HTTPClient
-from .manager import dict, sessions
+from .manager import sessions
 from .manager.browser import Browser
 from .manager.dict import HeaderManager, ParamManager
 from .models.struct import Struct

@@ -146,7 +146,7 @@ from getman.manager.dict import ParamManager
 
 url = "https://example.com"
 version = "your-version"  # Optional
-client = GetMan(baseURL=url, version=version)
+client = GetMan(base_url=url, version=version)
 client.add_cookie("sessionid", "RANDOM SESSION ID")
 
 params = ParamManager()
@@ -167,7 +167,7 @@ from getman.manager.dict import DictManager
 
 url = "https://example.com"
 version = "your-version"  # Optional
-client = GetMan(baseURL=url, version=version)
+client = GetMan(base_url=url, version=version)
 client.add_cookie("sessionid", "RANDOM SESSION ID")
 
 body = DictManager()
@@ -188,20 +188,21 @@ from getman.constant import HttpMethod
 from getman.manager.dict import DictManager
 from getman.utils.decorators import coroutine
 
-@coroutine # use this to run coroutine
+
+@coroutine  # use this to run coroutine
 async def main():
     url = "https://example.com"
-    
-    client = GetMan(baseURL=url)
-    
+
+    client = GetMan(base_url=url)
+
     body = DictManager()
     body["product_name"] = "getman"
-    
+
     route = client.routes("product")
     total_request = 100
     for i in range(total_request):
         await client.perform_request(method=HttpMethod.POST, routes=route, body=body.data, queue=True)
-    
+
     client.execute_queue()  # Execute all queued requests concurrently
 ```
 

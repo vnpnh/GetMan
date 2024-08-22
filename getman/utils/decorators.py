@@ -23,6 +23,7 @@ def platform_checker(cls):
         Returns:
             The decorated class with platform checking logic.
     """
+
     def wrapper(*args, **kwargs):
         if ('platform' in kwargs and
                 kwargs['platform'] not in [
@@ -92,6 +93,7 @@ def retry_request():
         Returns:
             A decorator that wraps the function with retry logic.
     """
+
     def decorator_request(func):
         @functools.wraps(func)
         def wrapper_request(*args, **kwargs):
@@ -132,6 +134,7 @@ def coroutine(func):
        Returns:
            A function that runs the original function within an asynchronous event loop.
     """
+
     @wraps(func)
     def wrapper(*args, **kwargs):
         async def async_func():

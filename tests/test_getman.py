@@ -12,7 +12,7 @@ class TestGetMan(unittest.TestCase):
     @patch('getman.client.Console')
     def setUp(self, mock_console):
         self.settings = Settings()
-        self.client = GetMan(baseURL="https://example.com", version="v1", settings=self.settings)
+        self.client = GetMan(base_url="https://example.com", version="v1", settings=self.settings)
 
     @patch('getman.client.GetMan.get')
     def test_request_get_method(self, mock_get):

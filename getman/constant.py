@@ -4,6 +4,9 @@ from enum import Enum, StrEnum, auto
 
 @dataclass
 class HttpMethod(StrEnum):
+    """
+    HTTP methods used in requests
+    """
     GET = auto()
     POST = auto()
     PUT = auto()
@@ -13,6 +16,9 @@ class HttpMethod(StrEnum):
 
 
 class PlatformOS(StrEnum):
+    """
+    Platform operating systems
+    """
     WINDOWS = auto()
     DARWIN = auto()
     LINUX = auto()
@@ -20,6 +26,9 @@ class PlatformOS(StrEnum):
 
 
 class StatusCode(Enum):
+    """
+    HTTP status codes
+    """
     OK = 200
     CREATED = 201
     ACCEPTED = 202
