@@ -1,11 +1,12 @@
+import asyncio
 import functools
 import time
 import warnings
-import asyncio
+from functools import wraps
+
 import requests
 
 from getman.constant import PlatformOS
-from functools import wraps
 
 
 def platform_checker(cls):

@@ -1,4 +1,5 @@
-from typing import NamedTuple, Literal
+from typing import Literal, NamedTuple
+
 
 class VersionInfo(NamedTuple):
     major: int

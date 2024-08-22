@@ -1,5 +1,5 @@
-import socket
 import json
+import socket
 from dataclasses import dataclass
 
 HOST: str = 'localhost'

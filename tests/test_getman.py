@@ -1,9 +1,11 @@
 import asyncio
 import unittest
-from unittest.mock import patch, MagicMock, AsyncMock
+from unittest.mock import AsyncMock, MagicMock, patch
+
 from getman.client import GetMan
 from getman.constant import HttpMethod
 from getman.settings import Settings
+
 
 class TestGetMan(unittest.TestCase):
 

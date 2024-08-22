@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 from functools import lru_cache
-from typing import Any, Optional, List, Tuple
+from typing import Any, List, Optional, Tuple
 
 
 @dataclass

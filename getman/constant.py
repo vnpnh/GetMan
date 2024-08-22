@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from enum import StrEnum, auto, Enum
+from enum import Enum, StrEnum, auto
 
 
 @dataclass

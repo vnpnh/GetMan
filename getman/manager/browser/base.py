@@ -1,6 +1,6 @@
 import os
 import sqlite3
-from dataclasses import field, dataclass
+from dataclasses import dataclass, field
 from typing import Optional
 
 from getman.manager.browser.constant import System
