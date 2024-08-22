@@ -6,9 +6,9 @@ from typing import Dict, List, Optional, Union
 from rich.console import Console
 from rich.theme import Theme
 
-from getman import DictManager
 from getman.constant import HttpMethod
 from getman.http import HTTPClient
+from getman.manager import DictManager
 from getman.manager.queue import QueueManager
 from getman.settings import Settings
 
