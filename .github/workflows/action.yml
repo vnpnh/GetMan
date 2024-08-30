@@ -40,7 +40,7 @@ jobs:
 
     - name: Lint with Pylint
       run: |
-        pylint getman
+        pylint getman --fail-under=8.0
 
     - name: Run tests and check coverage
       run: |
