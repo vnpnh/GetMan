@@ -5,7 +5,7 @@ It's people like you that make Project Name such a great tool.
 
 ## Where do I go from here?
 
-If you've noticed a bug or have a feature request, make sure to check our [Issues](https://github.com/vnpnh/getman/issues) to see if someone else in the community has already created a ticket. If not, go ahead and [make one](https://github.com/username/projectname/issues/new)!
+If you've noticed a bug or have a feature request, make sure to check our [Issues](https://github.com/vnpnh/getman/issues) to see if someone else in the community has already created a ticket. If not, go ahead and [make one](https://github.com/vnpnh/GetMan/issues/new)!
 
 ## Fork & create a branch
 
@@ -28,4 +28,3 @@ Once your changes are ready to be reviewed, create a pull request.
 ## And last but not least: Thank you for your contributions!
 
 We love seeing new pull requests, and we do our best to respond as quickly as possible.
-```
