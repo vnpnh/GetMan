@@ -12,7 +12,7 @@ class VersionInfo(NamedTuple):
     serial: int
 
 
-version = VersionInfo(1, 0, 1, 'final', 0)
+version = VersionInfo(1, 0, 0, 'final', 0)
 
 
 def get_version_text(version_info: VersionInfo) -> str:

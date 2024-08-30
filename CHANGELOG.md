@@ -1,12 +1,7 @@
 # Changelog
 
-## v1.0.1
-### Added or Changed
-- Updated dependencies
-- Better documentation and code quality
-- Add workflows and unit tests
 
-## v1.0.1
+## v1.0.0
 ### Added or Changed
 - Added requests and sessions
 - Added beautiful output
