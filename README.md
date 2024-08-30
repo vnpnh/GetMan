@@ -269,6 +269,6 @@ Distributed under the MIT License. See [LICENSE](LICENSE) for more information.
 
 [product-screenshot]: images/screenshot.png
 
-[Python]:    https://img.shields.io/badge/Python-3.9+-3776AB?style=for-the-badge&logo=python&logoColor=white
+[Python]:    https://img.shields.io/badge/Python-3.11+-3776AB?style=for-the-badge&logo=python&logoColor=white
 
 [Python-url]: https://www.python.org/

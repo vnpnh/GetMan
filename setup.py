@@ -26,8 +26,6 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.9",
-        "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
         "Programming Language :: Python :: 3.12",
     ],
@@ -37,6 +35,6 @@ setup(
         "rich>=13.8.0",
         "browser-cookie3>=0.19.1",
     ],
-    python_requires=">=3.9",
+    python_requires=">=3.11",
     setup_requires=["wheel"],
 )
